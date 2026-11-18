@@ -34,7 +34,7 @@ class DashboardController extends Controller
         $lowStockProducts = Product::whereColumn('stock', '<=', 'low_stock_threshold')->orderBy('stock')->take(6)->get();
         $recentOrders = Order::latest()->take(8)->get();
 
-        $daily = Order::select(DB::raw('DATE(created_at) as day'), DB::raw('SUM(total) as total'))
+        $daily = Order::select(DB::raw('DATE(created_at) as day'), (DB::raw("SUM(total) as total")))
             ->where('status', '!=', 'cancelled')
             ->where('created_at', '>=', now()->subDays(29)->startOfDay())
             ->groupBy('day')->orderBy('day')->get()->keyBy('day');
@@ -46,7 +46,11 @@ class DashboardController extends Controller
             $dailyTotals[] = (float) ($daily[$day]->total ?? 0);
         }
 
-        $monthly = Order::select(DB::raw("strftime('%Y-%m', created_at) as month"), DB::raw('SUM(total) as total'))
+        $driver = \Illuminate\Support\Facades\DB::connection()->getDriverName();
+        $monthFmt = $driver === 'sqlite' ? "strftime('%Y-%m', created_at)" : "DATE_FORMAT(created_at, '%Y-%m')";
+        $yearFmt = $driver === 'sqlite' ? "strftime('%Y', created_at)" : "YEAR(created_at)";
+
+        $monthly = Order::select(DB::raw("$monthFmt as month"), DB::raw("SUM(total) as total"))
             ->where('status', '!=', 'cancelled')
             ->where('created_at', '>=', now()->subMonths(11)->startOfMonth())
             ->groupBy('month')->orderBy('month')->get()->keyBy('month');
@@ -58,7 +62,7 @@ class DashboardController extends Controller
             $monthlyTotals[] = (float) ($monthly[$m->format('Y-m')]->total ?? 0);
         }
 
-        $yearly = Order::select(DB::raw("strftime('%Y', created_at) as year"), DB::raw('SUM(total) as total'))
+        $yearly = Order::select(DB::raw("$yearFmt as year"), DB::raw("SUM(total) as total"))
             ->where('status', '!=', 'cancelled')
             ->groupBy('year')->orderBy('year')->get();
 
