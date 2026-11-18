@@ -1,0 +1,19 @@
+<?php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+return new class extends Migration {
+    public function up(): void {
+        Schema::table('products', function (Blueprint $table) {
+            $table->string('sku')->nullable()->unique()->after('slug');
+            $table->string('barcode')->nullable()->after('sku');
+            $table->decimal('cost_price', 10, 2)->nullable()->after('price');
+            $table->text('specifications')->nullable()->after('description');
+            $table->unsignedInteger('low_stock_threshold')->default(5)->after('stock');
+            $table->boolean('is_active')->default(true)->after('is_featured');
+        });
+    }
+    public function down(): void {
+        Schema::table('products', fn (Blueprint $t) => $t->dropColumn(['sku', 'barcode', 'cost_price', 'specifications', 'low_stock_threshold', 'is_active']));
+    }
+};
