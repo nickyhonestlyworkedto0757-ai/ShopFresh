@@ -113,19 +113,19 @@
       </div>
     </section>
     @else
-      @php $isRecent = in_array($section->key, ['recent', 'newarrivals']); $isFlash = in_array($section->key, ['flash', 'recent', 'newarrivals']); $isTopselling = $section->key === 'topselling'; $isSponsored = $section->key === 'sponsored'; @endphp
-      <section class="max-w-7xl mx-auto px-4 mt-2 marketplace-section {{ $isTopselling || $isFlash || $isSponsored ? 'rounded-xl p-1 sm:p-1' : '' }}" style="background-color: {{ $isTopselling ? '#535357' : ($isSponsored ? '#000000' : ($isFlash ? ($isRecent ? '#BE1D3E' : '#1B8A4C') : 'transparent')) }}" data-section-key="{{ $section->key }}">
+      @php $isRecent = in_array($section->key, ['recent', 'newarrivals']); $isFlash = in_array($section->key, ['flash', 'recent', 'newarrivals']); $isTopselling = $section->key === 'topselling'; $isSponsored = $section->key === 'sponsored'; $isAppliances = $section->key === 'appliances'; @endphp
+      <section class="max-w-7xl mx-auto px-4 mt-2 marketplace-section {{ $isTopselling || $isFlash || $isSponsored || $isAppliances ? 'rounded-xl p-1 sm:p-1' : '' }}" style="background-color: {{ $isTopselling ? '#535357' : ($isSponsored ? '#000000' : ($isAppliances ? '#FF0100' : ($isFlash ? ($isRecent ? '#BE1D3E' : '#1B8A4C') : 'transparent'))) }}" data-section-key="{{ $section->key }}">
       <div class="flex items-end justify-between gap-3 mb-0.5">
         <div class="min-w-0">
-          <h2 class="font-display text-xs sm:text-base font-bold leading-none {{ $isFlash || $isTopselling || $isSponsored ? 'text-white' : '' }}">{{ $section->title }}</h2>
-          @if($section->subtitle)<p class="text-[10px] sm:text-xs {{ $isFlash || $isTopselling || $isSponsored ? 'text-white/80' : 'text-stone-500' }}">{{ $section->subtitle }}</p>@endif
+          <h2 class="font-display text-xs sm:text-base font-bold leading-none {{ $isFlash || $isTopselling || $isSponsored || $isAppliances ? 'text-white' : '' }}">{{ $section->title }}</h2>
+          @if($section->subtitle)<p class="text-[10px] sm:text-xs {{ $isFlash || $isTopselling || $isSponsored || $isAppliances ? 'text-white/80' : 'text-stone-500' }}">{{ $section->subtitle }}</p>@endif
           @if($section->value === 'flash_sale' && $flashEndsAt)
             <div class="mt-1 inline-flex items-center gap-1 bg-white rounded-full pl-2 pr-3 py-0.5 text-[10px] sm:text-xs font-bold text-brand-600" data-countdown="{{ $flashEndsAt->toIso8601String() }}">
               <i data-lucide="timer" class="w-4 h-4"></i>Ends in <span class="countdown-clock font-mono text-stone-900">--:--:--</span>
             </div>
           @endif
         </div>
-        <a href="{{ $section->sectionUrl() }}" class="shrink-0 flex items-center gap-1 text-xs sm:text-sm font-bold {{ $isFlash || $isTopselling || $isSponsored ? 'bg-white text-brand-600 rounded-full px-4 py-1.5 hover:bg-sun-100' : 'text-brand-600 hover:underline' }}">See all<i data-lucide="chevron-right" class="w-4 h-4"></i></a>
+        <a href="{{ $section->sectionUrl() }}" class="shrink-0 flex items-center gap-1 text-xs sm:text-sm font-bold {{ $isFlash || $isTopselling || $isSponsored || $isAppliances ? 'bg-white text-brand-600 rounded-full px-4 py-1.5 hover:bg-sun-100' : 'text-brand-600 hover:underline' }}">See all<i data-lucide="chevron-right" class="w-4 h-4"></i></a>
       </div>
 
       <div class="relative">
